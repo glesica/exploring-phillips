@@ -1,0 +1,7 @@
+Exploring the Phillips Curve
+
+The Phillips Curve is an economic theory that says the unemployment rate and the rate of inflation are negatively correlated. In other words, higher unemployment correlates with lower inflation, and vice versa.
+
+This is a small web app, built with R and Shiny, that allows the user to explore the data related to this theory. Specifically, it demonstrates the idea of a curve "shifting", a common idea in economics.
+
+An online demo is available: http://lesica.com:3838/george/phillips/
