@@ -30,7 +30,8 @@ shinyUI(pageWithSidebar(
     helpText("Created by George Lesica (george@lesica.com) using R",
              "(http://r-project.org) and Shiny",
              "(http://www.rstudio.com/shiny/).",
-             "Data source: Bureau of Labor Statistics (http://bls.gov).")
+             "Data source: Bureau of Labor Statistics (http://bls.gov)."),
+    helpText("Download the source at https://github.com/glesica/exploring-phillips")
   ),
   mainPanel(
     h4("Visualization"),
