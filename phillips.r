@@ -42,20 +42,21 @@ load.unemp <- function() {
   unemp.df
 }
 
-# Arbitrary time periods
-phillips <- function(startyr=NULL, endyr=NULL, lag=12, leg=TRUE,
-                     labs=FALSE, clustersize=NULL, clusters=1) {
-  cpi.df <- load.cpi()
-  unemp.df <- load.unemp()
-  # Cull for same start year
-  min.yr <- max(min(cpi.df$Year), min(unemp.df$Year))
-  cpi.df <- cpi.df[cpi.df$Year >= min.yr,]
-  unemp.df <- unemp.df[unemp.df$Year >= min.yr,]
-  # Aggregate
-  df <- data.frame(unemp.df$Year, unemp.df$Month,
-                   unemp.df$Unemployment, cpi.df$Inflation,
-                   cpi.df$CPI)
-  names(df) <- c("Year", "Month", "Unemployment", "Inflation", "CPI")
+load.phillips <- function(startyr=NULL, endyr=NULL, clustersize=NULL,
+                          clusters=1, df=NULL) {
+  if (is.null(df)) {
+    cpi.df <- load.cpi()
+    unemp.df <- load.unemp()
+    # Cull for same start year
+    min.yr <- max(min(cpi.df$Year), min(unemp.df$Year))
+    cpi.df <- cpi.df[cpi.df$Year >= min.yr,]
+    unemp.df <- unemp.df[unemp.df$Year >= min.yr,]
+    # Aggregate
+    df <- data.frame(unemp.df$Year, unemp.df$Month,
+                     unemp.df$Unemployment, cpi.df$Inflation,
+                     cpi.df$CPI)
+    names(df) <- c("Year", "Month", "Unemployment", "Inflation", "CPI")
+  }
   # Sort by year then month
   df <- df[order(df$Year, df$Month),]
   row.names(df) <- c()
@@ -81,6 +82,14 @@ phillips <- function(startyr=NULL, endyr=NULL, lag=12, leg=TRUE,
                                    labels=1:clusters))
     }
   }
+  df
+}
+
+# Arbitrary time periods
+plot.phillips <- function(df, lag=12, leg=TRUE, labs=FALSE) {
+  startyr <- min(df$Year)
+  endyr <- max(df$Year)
+  n <- nrow(df)
   # Plot that shit
   if (lag >= 0) {
     unemp.set <- 1:(n-lag)
@@ -110,5 +119,4 @@ phillips <- function(startyr=NULL, endyr=NULL, lag=12, leg=TRUE,
   model <- lm(df$Inflation[inf.set] ~ df$Unemployment[unemp.set])
   lines(df$Unemployment[unemp.set], fitted(model), lwd=2, col="black")
   title(paste("Phillips Curve - US", startyr, "to", endyr))
-  return(df)
 }

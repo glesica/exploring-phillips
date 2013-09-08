@@ -1,18 +1,22 @@
-source('phillips.r')
-library(shiny)
+minYr <- min(full.df$Year)
+maxYr <- max(full.df$Year)
 
 shinyUI(pageWithSidebar(
   headerPanel("Exploring the Phillips Curve"),
   sidebarPanel(
     h4("Parameters"),
-    sliderInput("yrs", "Years:", min=1948,
-                max=2012, value=c(1948, 2012),
+    sliderInput("yrs", "Years:", min=minYr,
+                max=maxYr, value=c(minYr, maxYr),
                 format="####"),
     sliderInput("clusters", "Number of clusters:", min=1,
                 max=10, value=1,
                 format="##"),
     sliderInput("lag", "Time lag (months):", min=-36, max=36, value=12,
                 format="##"),
+    checkboxInput("labs", label="Label points", value=FALSE),
+    downloadButton("downloadData", "Download Data (CSV)"),
+    helpText("The button above lets you download the exact dataset used to",
+             "generate the plots currently shown."),
     h4("Help"),
     helpText("Set the parameters above to update the plot and trend line.",
              "Lags are specified by the number of months between the",
@@ -34,7 +38,10 @@ shinyUI(pageWithSidebar(
     helpText("Download the source at https://github.com/glesica/exploring-phillips")
   ),
   mainPanel(
-    h4("Visualization"),
-    plotOutput("phillipsPlot")
+    tabsetPanel(
+      tabPanel("Scatterplot", plotOutput("phillipsPlot")),
+      tabPanel("Histograms", plotOutput("inflationHist"),
+               plotOutput("unemploymentHist"))
+    )
   )
 ))
